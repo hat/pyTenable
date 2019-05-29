@@ -571,6 +571,14 @@ class ScansAPI(TIOEndpoint):
             payload['filter.search_type'] = self._check(
                 'filter_type', kw['filter_type'], str, choices=['and', 'or'])
 
+        # Check for filters, if found add to payload
+        # TODO: add self._check functions to each payload item for verification
+        if 'filters' in kw:
+            for i in range(0, len(kw['filters'])):
+                payload['filter.{}.filter'.format(i)] = kw['filters'][i][0]
+                payload['filter.{}.quality'.format(i)] = kw['filters'][i][1]
+                payload['filter.{}.value'.format(i)] = kw['filters'][i][2]
+
         # Now we need to set the FileObject.  If one was passed to us, then lets
         # just use that, otherwise we will need to instantiate a BytesIO object
         # to push the data into.
